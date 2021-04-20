@@ -39,6 +39,7 @@ class Algorithms:
             pass
 
             # TODO Algorithm 3 goes here
+            
 
         elif flag == 2:  # orbit following
             pass
@@ -299,3 +300,4 @@ class DubinsParameters:
         self.c_ls = mat([0, 0, 0]).T
         self.c_re = mat([0, 0, 0]).T
         self.c_le = mat([0, 0, 0]).T
+
