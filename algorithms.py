@@ -1,4 +1,5 @@
 import numpy as np
+import math
 from mat import mat
 from utils import in_half_plane, s_norm, Rz, angle, i2p
 
@@ -39,7 +40,17 @@ class Algorithms:
             pass
 
             # TODO Algorithm 3 goes here
-            
+           h_d = -r_d + math.sqrt (s_n**2 + s_e**2) * (q_d/ math.sqrt(q_n**2 + q_e**2)) #equation 10.5
+           chi_q = math.atan(q_e, q_n)
+           while (chi_q - chi) < -math.pi:
+               chi_q = chi_q + 2 * math.pi
+           
+           while (chi_q - chi) > math.pi:
+               chi_q = chi_q - 2 * math.pi
+
+           e_py = -math.sin(chi_q) * (p_n - r_n) + math.cos(chi_q) * (p_e - r_e)
+
+           chi_c = chi_q - chi_inf * 2 / math.pi * math.atan(k_path * e_py)
 
         elif flag == 2:  # orbit following
             pass
@@ -300,4 +311,5 @@ class DubinsParameters:
         self.c_ls = mat([0, 0, 0]).T
         self.c_re = mat([0, 0, 0]).T
         self.c_le = mat([0, 0, 0]).T
+
 
