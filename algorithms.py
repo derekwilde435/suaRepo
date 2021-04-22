@@ -49,13 +49,25 @@ class Algorithms:
                chi_q = chi_q - 2 * math.pi
 
            e_py = -math.sin(chi_q) * (p_n - r_n) + math.cos(chi_q) * (p_e - r_e)
+           e_crosstrack = e_py
 
            chi_c = chi_q - chi_inf * 2 / math.pi * math.atan(k_path * e_py)
+
+           h_c = h_d
 
         elif flag == 2:  # orbit following
             pass
 
             # TODO Algorithm 4 goes here
+            h_c = -c_d
+            d = math.sqrt((p_n - c_n)**2 + (p_e - c_e)**2)
+            rho = math.atan2(p_e - c_e, p_n - c_n)
+            while (rho - chi) < -math.pi:
+                rho = rho + 2 * math.pi
+            while (rho - chi) > math.pi:
+                rho = rho - 2 * math.pi
+            chi_c = rho + lambda * (math.pi / 2 + math.atan(k_orbit * ((d - p) / rho)))
+
 
         else:
             raise Exception("Invalid path type")
@@ -112,7 +124,6 @@ class Algorithms:
             if self.i < (N - 2):
                 self.i += 1
         q = qi1
-
         return r, q
 
     # followWppFillet algorithm left here for reference.
