@@ -1,5 +1,4 @@
 import numpy as np
-import math
 from mat import mat
 from utils import in_half_plane, s_norm, Rz, angle, i2p
 
@@ -34,42 +33,62 @@ class Algorithms:
 
         Reference: Beard, Small Unmanned Aircraft, Chapter 10, Algorithms 3 and 4
         Copyright 2018 Utah State University
-        """
+        """math.
+
+        # Unpackaging variables
+        r_n = r[0][0]
+        r_e = r[1][0]
+        r_d = r[2][0]
+        p_n = p[0][0]
+        p_e = p[1][0]
+        p_d = p[2][0]
+        k_i = np.array([0, 0, 1])
+        e_i_p = np.array([p_n-r_n, p_e-r_e, p_d-r_d])
+        normal = np.cross(q.T, k_i)/(np.linalg.norm(np.cross(q.T, k_i))) # the transpose I did in Matlab was taken out and I just rearranged the values
+        s_i = np.subtract(e_i_p, (np.dot(e_i_p, n.T)))
+        s_n = s_i[0]
+        s_e = s_i[1]
+        # s_d = 
+        q_n = q[0]
+        q_e = q[1]
+        q_d = q[2]
+        chi_q = np.artan2(q_e, q_n)
+        chi = chi
+
+        c_n = 
+        c_e = 
+        c_d = 
+        lamb = lamb
+        k_orbit = k_orbit
+        rho = rho
+
 
         if flag == 1:  # straight line
             pass
-
             # TODO Algorithm 3 goes here
-           h_d = -r_d + math.sqrt (s_n**2 + s_e**2) * (q_d/ math.sqrt(q_n**2 + q_e**2)) #equation 10.5
-           chi_q = math.atan(q_e, q_n)
-           while (chi_q - chi) < -math.pi:
-               chi_q = chi_q + 2 * math.pi
-           
-           while (chi_q - chi) > math.pi:
-               chi_q = chi_q - 2 * math.pi
-
-           e_py = -math.sin(chi_q) * (p_n - r_n) + math.cos(chi_q) * (p_e - r_e)
-           e_crosstrack = e_py
-
-           chi_c = chi_q - chi_inf * 2 / math.pi * math.atan(k_path * e_py)
-
-           h_c = h_d
-
+            h_d = -r_d + np.sqrt(s_n**2 + s_e**2) * (q_d/ np.sqrt(q_n**2 + q_e**2)) #equation 10.5
+            chi_q = np.atan2(q_e, q_n)
+            while (chi_q - chi) < -np.pi:
+                chi_q = chi_q + 2 * np.pi
+            while (chi_q - chi) > np.pi:
+                chi_q = chi_q - 2 * np.pi
+            e_py = -np.sin(chi_q) * (p_n - r_n) + np.cos(chi_q) * (p_e - r_e)
+            e_crosstrack = e_py
+            chi_c = chi_q - chi_inf * 2 / np.pi * np.atan(k_path * e_py)
+            h_c = h_d
+            
         elif flag == 2:  # orbit following
             pass
-
             # TODO Algorithm 4 goes here
             h_c = -c_d
-            d = math.sqrt((p_n - c_n)**2 + (p_e - c_e)**2)
-            rho = math.atan2(p_e - c_e, p_n - c_n)
-            while (rho - chi) < -math.pi:
-                rho = rho + 2 * math.pi
-            while (rho - chi) > math.pi:
-                rho = rho - 2 * math.pi
-            chi_c = rho + lambda * (math.pi / 2 + math.atan(k_orbit * ((d - p) / rho)))
+            d = np.sqrt((p_n - c_n)**2 + (p_e - c_e)**2)
+            rho = np.atan2(p_e - c_e, p_n - c_n)
+            while (rho - chi) < -np.pi:
+                rho = rho + 2 * np.pi
+            while (rho - chi) > np.pi:
+                rho = rho - 2 * np.pi
+            chi_c = rho + lambda * (np.pi / 2 + np.atan(k_orbit * ((d - p) / rho)))
             # e_crosstrack may still need to go here as zero??
-
-
         else:
             raise Exception("Invalid path type")
 
