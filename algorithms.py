@@ -33,7 +33,7 @@ class Algorithms:
 
         Reference: Beard, Small Unmanned Aircraft, Chapter 10, Algorithms 3 and 4
         Copyright 2018 Utah State University
-        """math.
+        """
 
         # Unpackaging variables
         r_n = r[0][0]
@@ -88,7 +88,7 @@ class Algorithms:
             while (rho - chi) > np.pi:
                 rho = rho - 2 * np.pi
             chi_c = rho + lambda * (np.pi / 2 + np.atan(k_orbit * ((d - p) / rho)))
-            # e_crosstrack may still need to go here as zero??
+            e_crosstrack = d - rho
         else:
             raise Exception("Invalid path type")
 
