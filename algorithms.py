@@ -67,6 +67,7 @@ class Algorithms:
             while (rho - chi) > math.pi:
                 rho = rho - 2 * math.pi
             chi_c = rho + lambda * (math.pi / 2 + math.atan(k_orbit * ((d - p) / rho)))
+            # e_crosstrack may still need to go here as zero??
 
 
         else:
