@@ -44,8 +44,8 @@ class Algorithms:
         p_d = p[2][0]
         k_i = np.array([0, 0, 1])
         e_i_p = np.array([p_n-r_n, p_e-r_e, p_d-r_d])
-        normal = np.cross(q.T, k_i)/(np.linalg.norm(np.cross(q.T, k_i))) # the transpose I did in Matlab was taken out and I just rearranged the values
-        s_i = np.subtract(e_i_p, (np.dot(e_i_p, n.T)))
+        normal = np.cross(k_i, q.T)/(np.linalg.norm(np.cross(k_i, q.T)))
+        s_i = np.subtract(e_i_p, (np.dot(e_i_p, normal.T) * normal))
         s_n = s_i[0]
         s_e = s_i[1]
         # s_d = 
@@ -55,9 +55,9 @@ class Algorithms:
         chi_q = np.artan2(q_e, q_n)
         chi = chi
 
-        c_n = 
-        c_e = 
-        c_d = 
+        c_n = c[0][0]
+        c_e = c[1][0]
+        c_d = c[2][0]
         lamb = lamb
         k_orbit = k_orbit
         rho = rho
@@ -87,7 +87,7 @@ class Algorithms:
                 rho = rho + 2 * np.pi
             while (rho - chi) > np.pi:
                 rho = rho - 2 * np.pi
-            chi_c = rho + lambda * (np.pi / 2 + np.atan(k_orbit * ((d - p) / rho)))
+            chi_c = rho + lamb * (np.pi / 2 + np.atan(k_orbit * ((d - p) / rho)))
             e_crosstrack = d - rho
         else:
             raise Exception("Invalid path type")
