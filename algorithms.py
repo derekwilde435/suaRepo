@@ -37,15 +37,25 @@ class Algorithms:
 
         # Unpackaging variables
         r_n = r[0][0]
+        print('r_n', r_n)
         r_e = r[1][0]
+        print('r_e', r_e)
         r_d = r[2][0]
+        print('r_d', r_d)
         p_n = p[0][0]
+        print('p_n', p_n)
         p_e = p[1][0]
+        print('p_e', p_e)
         p_d = p[2][0]
+        print('p_d', p_d)
         k_i = np.array([0, 0, 1])
+        print('k_i', k_i)
         e_i_p = np.array([[p_n-r_n], [p_e-r_e], [p_d-r_d]])  # 3x1
-        normal = (np.cross(k_i, q.T)/(np.linalg.norm(np.cross(k_i, q.T)))).T  # 3x1
+        print('e_i_p', e_i_p)
+        normal = (np.cross(q.T, k_i)/(np.linalg.norm(np.cross(q.T, k_i)))).T  # 3x1
+        print('normal', normal)
         s_i = np.subtract(e_i_p, (np.dot(e_i_p.T, normal) * normal))  # 3x1
+        print('s_i', s_i)
         s_n = s_i[0]
         s_e = s_i[1]
         # s_d = 
