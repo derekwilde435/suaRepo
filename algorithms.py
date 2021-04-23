@@ -43,16 +43,16 @@ class Algorithms:
         p_e = p[1][0]
         p_d = p[2][0]
         k_i = np.array([0, 0, 1])
-        e_i_p = np.array([p_n-r_n, p_e-r_e, p_d-r_d])
-        normal = np.cross(k_i, q.T)/(np.linalg.norm(np.cross(k_i, q.T)))
-        s_i = np.subtract(e_i_p, (np.dot(e_i_p, normal.T) * normal))
+        e_i_p = np.array([[p_n-r_n], [p_e-r_e], [p_d-r_d]])  # 3x1
+        normal = (np.cross(k_i, q.T)/(np.linalg.norm(np.cross(k_i, q.T)))).T  # 3x1
+        s_i = np.subtract(e_i_p, (np.dot(e_i_p.T, normal) * normal))  # 3x1
         s_n = s_i[0]
         s_e = s_i[1]
         # s_d = 
         q_n = q[0]
         q_e = q[1]
         q_d = q[2]
-        chi_q = np.artan2(q_e, q_n)
+        chi_q = np.atan2(q_e, q_n)
         chi = chi
 
         c_n = c[0][0]
