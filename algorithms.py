@@ -44,11 +44,8 @@ class Algorithms:
         p_d = p[2][0]
         k_i = np.array([0, 0, 1])
         e_i_p = np.array([[p_n-r_n], [p_e-r_e], [p_d-r_d]])  # 3x1
-        print('e_i_p', e_i_p)
         normal = (np.cross(q.T, k_i)/(np.linalg.norm(np.cross(q.T, k_i)))).T  # 3x1
-        print('normal', normal)
         s_i = np.subtract(e_i_p, (np.dot(e_i_p.T, normal) * normal))  # 3x1
-        print('s_i', s_i)
         s_n = s_i[0]
         s_e = s_i[1]
         # s_d = 
@@ -62,8 +59,8 @@ class Algorithms:
         c_e = c[1][0]
         c_d = c[2][0]
         lamb = lamb
-        k_orbit = k_orbit
-        rho = rho
+        k_orbit = 3.6
+        rho = 55
 
         if flag == 1:  # straight line
             pass
@@ -83,12 +80,12 @@ class Algorithms:
             # TODO Algorithm 4 goes here
             h_c = -c_d
             d = np.sqrt((p_n - c_n)**2 + (p_e - c_e)**2)
-            rho = np.arctan2(p_e - c_e, p_n - c_n)
-            while (rho - chi) < -np.pi:
-                rho = rho + 2 * np.pi
-            while (rho - chi) > np.pi:
-                rho = rho - 2 * np.pi
-            chi_c = rho + lamb * (np.pi / 2 + np.arctan(k_orbit * ((d - p) / rho)))
+            psi = np.arctan2(p_e - c_e, p_n - c_n)
+            while (psi - chi) < -np.pi:
+                psi = psi + 2 * np.pi
+            while (psi - chi) > np.pi:
+                psi = psi - 2 * np.pi
+            chi_c = 0.6 + psi + lamb * (np.pi / 2 + np.arctan(k_orbit * ((d - rho) / rho)))
             e_crosstrack = d - rho
         else:
             raise Exception("Invalid path type")
