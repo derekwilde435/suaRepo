@@ -278,6 +278,39 @@ class Algorithms:
         c_ls = p_s + R * Rz(-np.pi / 2) * np.array([[c_chi_s], [s_chi_s], [0]])
         c_re = p_e + R * Rz(np.pi / 2) * np.array([[c_chi_e], [s_chi_e], [0]])
         c_le = p_e + R * Rz(-np.pi / 2) * np.array([[c_chi_e], [s_chi_e], [0]])
+        # Compute path lengths
+        # Case 1: R-S-R
+        th = angle(c_re - c_rs)
+        L1 = s_norm(c_rs - c_re) \
+            + R*((2*np.pi + ((th - np.pi/2) % (2*np.pi)) - ((chi_s - np.pi/2) % (2*np.pi))) % (2*np.pi))\
+            + R*((2*np.pi + ((chi_e - np.pi/2) % (2*np.pi)) - ((th - np.pi/2) % (2*np.pi))) % (2*np.pi))
+        # Case 2: R-S-L
+        th = angle(c_le - c_rs)
+        ell = s_norm(c_le - c_rs)
+        th2 = th - np.pi/2 + np.arcsin(2*R/ell)
+        if np.isreal(th2) != 1:
+            L2 = np.nan  # will not be selected
+        else:
+            L2 = np.sqrt(ell**2 - 4*R**2) \
+                + R*((2*np.pi + ((th2) % (2*np.pi)) - ((chi_s - np.pi/2) % (2*np.pi))) % (2*np.pi))\
+                + R*((2*np.pi + ((th2 + np.pi) % (2*np.pi)) - ((chi_e + np.pi/2) % (2*np.pi))) % (2*np.pi))
+        # Case 3: L-S-R
+        th = angle(c_re - c_ls)
+        ell = s_norm(c_re - c_ls)
+        th2 = np.arccos(2 * R / ell)
+        if np.isreal(th2) != 1:
+            L3 = np.nan  # will not be selected
+        else:
+            L3 = np.sqrt(ell**2 - 4*R**2) \
+                + R*((2*np.pi + ((chi_s + np.pi/2) % (2*np.pi)) - ((th + th2) % (2*np.pi))) % (2*np.pi))\
+                + R*((2*np.pi + ((chi_e - np.pi/2) % (2*np.pi)) - ((th + th2 - np.pi) % (2*np.pi))) % (2*np.pi))
+        # Case 4: L-S-L
+        th = angle(c_le - c_ls)
+        L4 = s_norm(c_ls - c_le) \
+            + R*((2*np.pi + ((chi_s + np.pi/2) % (2*np.pi)) - ((th + np.pi/2) % (2*np.pi))) % (2*np.pi))\
+            + R*((2*np.pi + ((th + np.pi/2) % (2*np.pi)) - ((chi_e + np.pi/2) % (2*np.pi))) % (2*np.pi))
+        # Define the parameters for the minimum length path (ie: Dubins path)
+        
         
         # package output into DubinsParameters class
         dp = DubinsParameters()
