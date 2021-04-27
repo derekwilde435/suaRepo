@@ -359,8 +359,26 @@ class Algorithms:
         
         # package output into DubinsParameters class
         dp = DubinsParameters()
-
+        
         # TODO populate dp members here
+        dp.L = L  # path length (m)
+        dp.c_s = c_s  # start circle origin (m)
+        dp.lamb_s = lambda_s  # start circle direction (unitless)
+        dp.c_e = c_e  # end circle origin (m)
+        dp.lamb_e = lambda_e  # end circle direction (unitless)
+        dp.z_1 = z_1  # Half-plane H_1 location (m)
+        dp.q_12 = q_1  # Half-planes H_1 and H_2 unit normals (unitless)
+        dp.z_2 = z_2  # Half-plane H_2 location (m)
+        dp.z_3 = z_3  # Half-plane H_3 location  (m)
+        dp.q_3 = q_3  # Half-plane H_3 unit normal (m)
+        dp.case = i_min  # case (unitless)
+        dp.lengths = [L1, L2, L3, L4]
+        dp.theta = th
+        dp.ell = ell
+        dp.c_rs = c_rs
+        dp.c_ls = c_ls
+        dp.c_re = c_re
+        dp.c_le = c_le
 
         return dp
 
