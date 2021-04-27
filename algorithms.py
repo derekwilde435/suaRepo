@@ -311,51 +311,54 @@ class Algorithms:
             + R*((2*np.pi + ((th + np.pi/2) % (2*np.pi)) - ((chi_e + np.pi/2) % (2*np.pi))) % (2*np.pi))
             
         # Define the parameters for the minimum length path (ie: Dubins path)
-        def min([L1, L2, L3, L4]):
-            if i_min == 1:
-                c_s = c_rs
-                lambda_s = 1
-                c_e = c_re
-                lambda_e = 1
-                ell = s_norm(c_e - c_s)
-                th = angle(c_e - c_s)
-                q_1 = (c_e - c_s)/s_norm(c_e - c_s)
-                z_1 = c_s + R*Rz(-np.pi/2) * q_1
-                z_2 = c_e + R*Rz(-np.pi/2)*q_1
-            elif i_min == 2:
-                c_s = c_rs
-                lambda_s = 1
-                c_e = c_le
-                lambda_e = -1
-                ell = s_norm(c_e - c_s)
-                th = angle(c_e - c_s)
-                th2 = th - np.pi/2 + np.arcsin(2*R/ell)
-                q_1 = Rz(th2 + np.pi/2) * e_1
-                z_1 = c_s + R * Rz(th2) * e_1
-                z_2 = c_e + R * Rz(th2 + np.pi) * e_1
-            elif i_min == 3:
-                c_s = c_ls
-                lambda_s = -1
-                c_e = c_re
-                lambda_e = 1
-                ell = s_norm(c_e - c_s)
-                th = angle(c_e - c_s)
-                th2 = np.arccos(2*R/ell)
-                q_1 = Rz(th + th2 - np.pi/2) * e_1
-                z_1 = c_s + R * Rz(th + th2) * e_1
-                z_2 = c_e + R * Rz(th + th2 - np.pi) * e_1
-            else:  # i_min == 4
-                c_s = c_ls
-                lambda_s = -1
-                c_e = c_le
-                lambda_e = -1
-                ell = s_norm(c_e - c_s)
-                th = angle(c_e - c_s)
-                q_1 = (c_e - c_s)/s_norm(c_e - c_s)
-                z_1 = c_s + R * Rz(np.pi/2) * q_1
-                z_2 = c_e + R * Rz(np.pi/2) * q_1
-            z_3 = p_e
-            q_3 = Rz(chi_e) * e_1
+        listL = [L1, L2, L3, L4]
+        minL = min(listL)
+        index = [i for i, x in enumerate(listL) if x == minL]
+        i_min = index[0]
+        if i_min == 1:
+            c_s = c_rs
+            lambda_s = 1
+            c_e = c_re
+            lambda_e = 1
+            ell = s_norm(c_e - c_s)
+            th = angle(c_e - c_s)
+            q_1 = (c_e - c_s)/s_norm(c_e - c_s)
+            z_1 = c_s + R*Rz(-np.pi/2) * q_1
+            z_2 = c_e + R*Rz(-np.pi/2)*q_1
+        elif i_min == 2:
+            c_s = c_rs
+            lambda_s = 1
+            c_e = c_le
+            lambda_e = -1
+            ell = s_norm(c_e - c_s)
+            th = angle(c_e - c_s)
+            th2 = th - np.pi/2 + np.arcsin(2*R/ell)
+            q_1 = Rz(th2 + np.pi/2) * e_1
+            z_1 = c_s + R * Rz(th2) * e_1
+            z_2 = c_e + R * Rz(th2 + np.pi) * e_1
+        elif i_min == 3:
+            c_s = c_ls
+            lambda_s = -1
+            c_e = c_re
+            lambda_e = 1
+            ell = s_norm(c_e - c_s)
+            th = angle(c_e - c_s)
+            th2 = np.arccos(2*R/ell)
+            q_1 = Rz(th + th2 - np.pi/2) * e_1
+            z_1 = c_s + R * Rz(th + th2) * e_1
+            z_2 = c_e + R * Rz(th + th2 - np.pi) * e_1
+        else:  # i_min == 4
+            c_s = c_ls
+            lambda_s = -1
+            c_e = c_le
+            lambda_e = -1
+            ell = s_norm(c_e - c_s)
+            th = angle(c_e - c_s)
+            q_1 = (c_e - c_s)/s_norm(c_e - c_s)
+            z_1 = c_s + R * Rz(np.pi/2) * q_1
+            z_2 = c_e + R * Rz(np.pi/2) * q_1
+        z_3 = p_e
+        q_3 = Rz(chi_e) * e_1
         
         # package output into DubinsParameters class
         dp = DubinsParameters()
