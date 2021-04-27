@@ -411,6 +411,81 @@ class Algorithms:
         """
 
         # TODO Algorithm 8 goes here
+        if not i:  # checks if i is empty
+            i = 0
+            state = 0
+        if newpath:
+            i = 2
+            state = 1
+            m, N = w.shape
+            assert N >= 3
+            assert m == 3
+        else:
+            m, N = w.shape
+            assert N >= 3
+            assert m == 3
+        dp = findDubinsParameters(W[:, self.i-1], Chi[self.i-1, :], W[:, self.i], Chi[self.i, :], R)
+        if state == 1:
+            # Follow start orbit until on the correct side of H1
+            flag = 2
+            c = dp.c_s
+            rho = R
+            lamb = dp.lambda_s
+            r = np.empty((3, 1))
+            r[:] = np.nan
+            q = np.empty((3, 1))
+            q[:] = np.nan
+            if in_half_plane(p, dp.z_1, -dp.q_12):
+                state = 2
+        elif state == 2:
+            # Continue following the start orbit until in H1
+            flag = 2
+            c = dp.c_s
+            rho = R
+            lamb = dp.lambda_s
+            r = np.empty((3, 1))
+            r[:] = np.nan
+            q = np.empty((3, 1))
+            q[:] = np.nan
+            if in_half_plane(p, dp.z_1, dp.q_12):
+                state = 3
+        elif state == 3:
+            # Transition to straight-line path until in H2
+            flag = 1
+            r = dp.z_1
+            q = dp.q_12
+            c = np.empty((3, 1))
+            c[:] = np.nan
+            rho = np.nan
+            lamb = np.nan
+            if in_half_plane(p, dp.z_2, dp.q_12):
+                state = 4
+        elif state == 4:
+            flag = 2
+            c = dp.c_e
+            rho = R
+            lamb = dp.lambda_e
+            r = np.empty((3, 1))
+            r[:] = np.nan
+            q = np.empty((3, 1))
+            q[:] = np.nan
+            if in_half_plane(p, dp.z_3, -dp.q_3):
+                state = 5
+        else:  # state == 5
+            # Continue following the end orbit until in H3
+            flag = 2
+            c = dp.c_e
+            rho = R
+            lamb = dp.lambda_e
+            r = np.empty((3, 1))
+            r[:] = np.nan
+            q = np.empty((3, 1))
+            q[:] = np.nan
+            if in_half_plane(p, dp.z_3, dp.q_3):
+                state = 1
+                i = i + 1
+                if i > N:
+                    i = N
 
         return flag, r, q, c, rho, lamb, self.i, dp
 
