@@ -124,7 +124,7 @@ class Algorithms:
             self.i = 1
 
         # check sizes
-        m, N = w.shape
+        m, N = W.shape
         assert N >= 3
         assert m == 3
 
@@ -182,11 +182,11 @@ class Algorithms:
             self.state = 1
 
             # Check size of waypoints matrix
-            m, N = w.shape  # Where 'N' is the number of waypoints and 'm' dimensions
+            m, N = W.shape  # Where 'N' is the number of waypoints and 'm' dimensions
             assert N >= 3
             assert m == 3
         else:
-            [m, N] = w.shape
+            [m, N] = W.shape
             assert N >= 3
             assert m == 3
         # Calculate the q vector and fillet angle
@@ -274,7 +274,18 @@ class Algorithms:
         s_chi_s = np.sin(chi_s)
         c_chi_e = np.cos(chi_e)
         s_chi_e = np.sin(chi_e)
-        c_rs = p_s + R * Rz(np.pi / 2) * np.array([[c_chi_s], [s_chi_s], [0]])
+        # print("p_s is of type:", type(p_s))
+        # print("R is of type:", type(R))
+        # print("c_chi_s is of type:", type(c_chi_s))
+        # print("s_chi_s is of type:", type(s_chi_s))
+        z = Rz(np.pi / 2)
+        a = np.array([[c_chi_s], [s_chi_s], [0]])
+        # print("z is of type:", type(z))
+        print("p_s=", p_s)
+        print("R=", R)
+        print("z=", z)
+        print("a=", a)
+        c_rs = p_s + R * z * a
         c_ls = p_s + R * Rz(-np.pi / 2) * np.array([[c_chi_s], [s_chi_s], [0]])
         c_re = p_e + R * Rz(np.pi / 2) * np.array([[c_chi_e], [s_chi_e], [0]])
         c_le = p_e + R * Rz(-np.pi / 2) * np.array([[c_chi_e], [s_chi_e], [0]])
@@ -414,20 +425,20 @@ class Algorithms:
         """
 
         # TODO Algorithm 8 goes here
-        if not i:  # checks if i is empty
-            i = 0
+        if not self.i:  # checks if i is empty
+            self.i = 0
             state = 0
         if newpath:
-            i = 2
+            self.i = 2
             state = 1
-            m, N = w.shape
+            m, N = W.shape
             assert N >= 3
             assert m == 3
         else:
-            m, N = w.shape
+            m, N = W.shape
             assert N >= 3
             assert m == 3
-        dp = findDubinsParameters(W[:, self.i-1], Chi[self.i-1, :], W[:, self.i], Chi[self.i, :], R)
+        dp = self.findDubinsParameters(W[:, self.i-1], Chi[self.i-1, :], W[:, self.i], Chi[self.i, :], R)
         if state == 1:
             # Follow start orbit until on the correct side of H1
             flag = 2
@@ -486,9 +497,9 @@ class Algorithms:
             q[:] = np.nan
             if in_half_plane(p, dp.z_3, dp.q_3):
                 state = 1
-                i = i + 1
-                if i > N:
-                    i = N
+                self.i= self.i+ 1
+                if self.i> N:
+                    self.i= N
 
         return flag, r, q, c, rho, lamb, self.i, dp
 
