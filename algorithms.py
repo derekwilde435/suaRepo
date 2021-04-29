@@ -337,7 +337,7 @@ class Algorithms:
         minL = min(listL)
         index = [i for i, x in enumerate(listL) if x == minL]
         i_min = index[0]
-        if i_min == 0:
+        if i_min == 1:
             c_s = c_rs
             lamb_s = 1
             c_e = c_re
@@ -347,7 +347,7 @@ class Algorithms:
             q_1 = (c_e - c_s)/np.linalg.norm(c_e-c_s)
             z_1 = c_s + R*Rz(-np.pi/2) * q_1
             z_2 = c_e + R*Rz(-np.pi/2)*q_1
-        elif i_min == 1:
+        elif i_min == 2:
             c_s = c_rs
             lamb_s = 1
             c_e = c_le
@@ -358,7 +358,7 @@ class Algorithms:
             q_1 = Rz(th2 + np.pi/2) * e_1
             z_1 = c_s + R * Rz(th2) * e_1
             z_2 = c_e + R * Rz(th2 + np.pi) * e_1
-        elif i_min == 2:
+        elif i_min == 3:
             c_s = c_ls
             lamb_s = -1
             c_e = c_re
@@ -369,7 +369,7 @@ class Algorithms:
             q_1 = Rz(th + th2 - np.pi/2) * e_1
             z_1 = c_s + R * Rz(th + th2) * e_1
             z_2 = c_e + R * Rz(th + th2 - np.pi) * e_1
-        else:  # i_min == 3
+        else:  # i_min == 4
             c_s = c_ls
             lamb_s = -1
             c_e = c_le
@@ -436,7 +436,7 @@ class Algorithms:
         """
 
         # TODO Algorithm 8 goes here
-        state = None
+        state = 0
         if not self.i:  # checks if i is empty
             self.i = 0
             state = 0
