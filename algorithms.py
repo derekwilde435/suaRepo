@@ -274,19 +274,8 @@ class Algorithms:
         s_chi_s = np.sin(chi_s[0, 0])
         c_chi_e = np.cos(chi_e[0, 0])
         s_chi_e = np.sin(chi_e[0, 0])
-        # print("p_s is of type:", type(p_s))
-        # print("R is of type:", type(R))
-        print("c_chi_s is of type:", type(c_chi_s))
-        print("c_chi_s=", c_chi_s)
-        print("s_chi_s is of type:", type(s_chi_s))
-        print("s_chi_s=", s_chi_s)
         z = Rz(np.pi / 2)
         a = np.array([[c_chi_s], [s_chi_s], [0]])
-        # print("z is of type:", type(z))
-        print("p_s=", p_s)
-        print("R=", R)
-        print("z=", z)
-        print("a=", a)
         c_rs = p_s + R * z * a
         c_ls = p_s + R * Rz(-np.pi / 2) * np.array([[c_chi_s], [s_chi_s], [0]])
         c_re = p_e + R * Rz(np.pi / 2) * np.array([[c_chi_e], [s_chi_e], [0]])
@@ -294,13 +283,14 @@ class Algorithms:
         # Compute path lengths
         # Case 1: R-S-R
         th = angle(c_re - c_rs)
-        L1 = s_norm(c_rs - c_re) \
+        L1 = s_norm(c_rs, -c_re) \
             + R*((2*np.pi + ((th - np.pi/2) % (2*np.pi)) - ((chi_s - np.pi/2) % (2*np.pi))) % (2*np.pi))\
             + R*((2*np.pi + ((chi_e - np.pi/2) % (2*np.pi)) - ((th - np.pi/2) % (2*np.pi))) % (2*np.pi))
         # Case 2: R-S-L
         th = angle(c_le - c_rs)
-        ell = s_norm(c_le - c_rs)
+        ell = s_norm(c_le, -c_rs)
         th2 = th - np.pi/2 + np.arcsin(2*R/ell)
+        print("th2=", th2)
         if np.isreal(th2) != 1:
             L2 = np.nan  # will not be selected
         else:
@@ -309,7 +299,7 @@ class Algorithms:
                 + R*((2*np.pi + ((th2 + np.pi) % (2*np.pi)) - ((chi_e + np.pi/2) % (2*np.pi))) % (2*np.pi))
         # Case 3: L-S-R
         th = angle(c_re - c_ls)
-        ell = s_norm(c_re - c_ls)
+        ell = s_norm(c_re, -c_ls)
         th2 = np.arccos(2 * R / ell)
         if np.isreal(th2) != 1:
             L3 = np.nan  # will not be selected
@@ -319,7 +309,7 @@ class Algorithms:
                 + R*((2*np.pi + ((chi_e - np.pi/2) % (2*np.pi)) - ((th + th2 - np.pi) % (2*np.pi))) % (2*np.pi))
         # Case 4: L-S-L
         th = angle(c_le - c_ls)
-        L4 = s_norm(c_ls - c_le) \
+        L4 = s_norm(c_ls, -c_le) \
             + R*((2*np.pi + ((chi_s + np.pi/2) % (2*np.pi)) - ((th + np.pi/2) % (2*np.pi))) % (2*np.pi))\
             + R*((2*np.pi + ((th + np.pi/2) % (2*np.pi)) - ((chi_e + np.pi/2) % (2*np.pi))) % (2*np.pi))
             
@@ -333,9 +323,9 @@ class Algorithms:
             lambda_s = 1
             c_e = c_re
             lambda_e = 1
-            ell = s_norm(c_e - c_s)
+            ell = s_norm(c_e, -c_s)
             th = angle(c_e - c_s)
-            q_1 = (c_e - c_s)/s_norm(c_e - c_s)
+            q_1 = (c_e - c_s)/s_norm(c_e, -c_s)
             z_1 = c_s + R*Rz(-np.pi/2) * q_1
             z_2 = c_e + R*Rz(-np.pi/2)*q_1
         elif i_min == 2:
@@ -343,7 +333,7 @@ class Algorithms:
             lambda_s = 1
             c_e = c_le
             lambda_e = -1
-            ell = s_norm(c_e - c_s)
+            ell = s_norm(c_e, -c_s)
             th = angle(c_e - c_s)
             th2 = th - np.pi/2 + np.arcsin(2*R/ell)
             q_1 = Rz(th2 + np.pi/2) * e_1
@@ -354,7 +344,7 @@ class Algorithms:
             lambda_s = -1
             c_e = c_re
             lambda_e = 1
-            ell = s_norm(c_e - c_s)
+            ell = s_norm(c_e, -c_s)
             th = angle(c_e - c_s)
             th2 = np.arccos(2*R/ell)
             q_1 = Rz(th + th2 - np.pi/2) * e_1
@@ -365,9 +355,9 @@ class Algorithms:
             lambda_s = -1
             c_e = c_le
             lambda_e = -1
-            ell = s_norm(c_e - c_s)
+            ell = s_norm(c_e, -c_s)
             th = angle(c_e - c_s)
-            q_1 = (c_e - c_s)/s_norm(c_e - c_s)
+            q_1 = (c_e - c_s)/s_norm(c_e, -c_s)
             z_1 = c_s + R * Rz(np.pi/2) * q_1
             z_2 = c_e + R * Rz(np.pi/2) * q_1
         z_3 = p_e
