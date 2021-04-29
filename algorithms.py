@@ -282,82 +282,101 @@ class Algorithms:
         c_le = p_e + R * Rz(-np.pi / 2) * np.array([[c_chi_e], [s_chi_e], [0]])
         # Compute path lengths
         # Case 1: R-S-R
-        th = angle(c_re - c_rs)
-        L1 = s_norm(c_rs, -c_re) \
-            + R*((2*np.pi + ((th - np.pi/2) % (2*np.pi)) - ((chi_s - np.pi/2) % (2*np.pi))) % (2*np.pi))\
-            + R*((2*np.pi + ((chi_e - np.pi/2) % (2*np.pi)) - ((th - np.pi/2) % (2*np.pi))) % (2*np.pi))
+        ang = angle(c_re - c_rs)
+        th = ang[0]
+        # L11 = np.linalg.norm(c_rs-c_re) \
+        #     + R*((2*np.pi + ((th - np.pi/2) % (2*np.pi)) - ((chi_s - np.pi/2) % (2*np.pi))) % (2*np.pi))\
+        #     + R*((2*np.pi + ((chi_e - np.pi/2) % (2*np.pi)) - ((th - np.pi/2) % (2*np.pi))) % (2*np.pi))
+        L11 = np.linalg.norm(c_rs-c_re) \
+            + R*(2*np.pi + (th - np.pi/2) - (chi_s - np.pi/2)) \
+            + R*(2*np.pi + (chi_e - np.pi/2) - (th - np.pi/2))
+        L1 = L11[0, 0]
         # Case 2: R-S-L
-        th = angle(c_le - c_rs)
-        ell = s_norm(c_le, -c_rs)
+        ang = angle(c_le - c_rs)
+        th = ang[0]
+        ell = np.linalg.norm(c_le-c_rs)
         th2 = th - np.pi/2 + np.arcsin(2*R/ell)
-        print("th2=", th2)
-        if np.isreal(th2) != 1:
-            L2 = np.nan  # will not be selected
+        if np.isreal(th2):
+            L2 = 1000000  # will not be selected
         else:
-            L2 = np.sqrt(ell**2 - 4*R**2) \
-                + R*((2*np.pi + ((th2) % (2*np.pi)) - ((chi_s - np.pi/2) % (2*np.pi))) % (2*np.pi))\
-                + R*((2*np.pi + ((th2 + np.pi) % (2*np.pi)) - ((chi_e + np.pi/2) % (2*np.pi))) % (2*np.pi))
+            # L22 = np.sqrt(ell**2 - 4*R**2) \
+            #     + R*((2*np.pi + ((th2) % (2*np.pi)) - ((chi_s - np.pi/2) % (2*np.pi))) % (2*np.pi))\
+            #     + R*((2*np.pi + ((th2 + np.pi) % (2*np.pi)) - ((chi_e + np.pi/2) % (2*np.pi))) % (2*np.pi))
+            L22 = np.sqrt(ell**2 - 4*R**2) \
+                + R*(2*np.pi + th2 - (chi_s - np.pi/2)) \
+                + R*(2*np.pi + (th2 + np.pi) - (chi_e + np.pi/2))
+            L2 = L22[0, 0]
         # Case 3: L-S-R
-        th = angle(c_re - c_ls)
-        ell = s_norm(c_re, -c_ls)
+        ang = angle(c_re - c_ls)
+        th = ang[0]
+        ell = np.linalg.norm(c_re-c_ls)
         th2 = np.arccos(2 * R / ell)
-        if np.isreal(th2) != 1:
-            L3 = np.nan  # will not be selected
+        if np.isreal(th2):
+            L3 = 1000000  # will not be selected
         else:
-            L3 = np.sqrt(ell**2 - 4*R**2) \
-                + R*((2*np.pi + ((chi_s + np.pi/2) % (2*np.pi)) - ((th + th2) % (2*np.pi))) % (2*np.pi))\
-                + R*((2*np.pi + ((chi_e - np.pi/2) % (2*np.pi)) - ((th + th2 - np.pi) % (2*np.pi))) % (2*np.pi))
+            # L33 = np.sqrt(ell**2 - 4*R**2) \
+            #     + R*((2*np.pi + ((chi_s + np.pi/2) % (2*np.pi)) - ((th + th2) % (2*np.pi))) % (2*np.pi))\
+            #     + R*((2*np.pi + ((chi_e - np.pi/2) % (2*np.pi)) - ((th + th2 - np.pi) % (2*np.pi))) % (2*np.pi))
+            L33 = np.sqrt(ell**2 - 4*R**2) \
+                + R*(2*np.pi + (chi_s + np.pi/2) - (th + th2)) \
+                + R*(2*np.pi + (chi_e - np.pi/2) - (th + th2 - np.pi))
+            L3 = L33[0, 0]
         # Case 4: L-S-L
-        th = angle(c_le - c_ls)
-        L4 = s_norm(c_ls, -c_le) \
-            + R*((2*np.pi + ((chi_s + np.pi/2) % (2*np.pi)) - ((th + np.pi/2) % (2*np.pi))) % (2*np.pi))\
-            + R*((2*np.pi + ((th + np.pi/2) % (2*np.pi)) - ((chi_e + np.pi/2) % (2*np.pi))) % (2*np.pi))
+        ang = angle(c_le - c_ls)
+        th = ang[0]
+        # L44 = np.linalg.norm(c_ls-c_le) \
+        #     + R*((2*np.pi + ((chi_s + np.pi/2) % (2*np.pi)) - ((th + np.pi/2) % (2*np.pi))) % (2*np.pi))\
+        #     + R*((2*np.pi + ((th + np.pi/2) % (2*np.pi)) - ((chi_e + np.pi/2) % (2*np.pi))) % (2*np.pi))
+        L44 = np.linalg.norm(c_ls-c_le) \
+            + R*(2*np.pi + (chi_s + np.pi/2) - (th + np.pi/2)) \
+            + R*(2*np.pi + (th + np.pi/2) - (chi_e + np.pi/2))
+        L4 = L44[0, 0]
             
         # Define the parameters for the minimum length path (ie: Dubins path)
         listL = [L1, L2, L3, L4]
         minL = min(listL)
         index = [i for i, x in enumerate(listL) if x == minL]
         i_min = index[0]
-        if i_min == 1:
+        if i_min == 0:
             c_s = c_rs
-            lambda_s = 1
+            lamb_s = 1
             c_e = c_re
-            lambda_e = 1
-            ell = s_norm(c_e, -c_s)
+            lamb_e = 1
+            ell = np.linalg.norm(c_e-c_s)
             th = angle(c_e - c_s)
-            q_1 = (c_e - c_s)/s_norm(c_e, -c_s)
+            q_1 = (c_e - c_s)/np.linalg.norm(c_e-c_s)
             z_1 = c_s + R*Rz(-np.pi/2) * q_1
             z_2 = c_e + R*Rz(-np.pi/2)*q_1
-        elif i_min == 2:
+        elif i_min == 1:
             c_s = c_rs
-            lambda_s = 1
+            lamb_s = 1
             c_e = c_le
-            lambda_e = -1
-            ell = s_norm(c_e, -c_s)
+            lamb_e = -1
+            ell = np.linalg.norm(c_e-c_s)
             th = angle(c_e - c_s)
             th2 = th - np.pi/2 + np.arcsin(2*R/ell)
             q_1 = Rz(th2 + np.pi/2) * e_1
             z_1 = c_s + R * Rz(th2) * e_1
             z_2 = c_e + R * Rz(th2 + np.pi) * e_1
-        elif i_min == 3:
+        elif i_min == 2:
             c_s = c_ls
-            lambda_s = -1
+            lamb_s = -1
             c_e = c_re
-            lambda_e = 1
-            ell = s_norm(c_e, -c_s)
+            lamb_e = 1
+            ell = np.linalg.norm(c_e-c_s)
             th = angle(c_e - c_s)
             th2 = np.arccos(2*R/ell)
             q_1 = Rz(th + th2 - np.pi/2) * e_1
             z_1 = c_s + R * Rz(th + th2) * e_1
             z_2 = c_e + R * Rz(th + th2 - np.pi) * e_1
-        else:  # i_min == 4
+        else:  # i_min == 3
             c_s = c_ls
-            lambda_s = -1
+            lamb_s = -1
             c_e = c_le
-            lambda_e = -1
-            ell = s_norm(c_e, -c_s)
+            lamb_e = -1
+            ell = np.linalg.norm(c_e-c_s)
             th = angle(c_e - c_s)
-            q_1 = (c_e - c_s)/s_norm(c_e, -c_s)
+            q_1 = (c_e - c_s)/np.linalg.norm(c_e-c_s)
             z_1 = c_s + R * Rz(np.pi/2) * q_1
             z_2 = c_e + R * Rz(np.pi/2) * q_1
         z_3 = p_e
@@ -367,11 +386,11 @@ class Algorithms:
         dp = DubinsParameters()
         
         # TODO populate dp members here
-        dp.L = L  # path length (m)
+        dp.L = minL  # path length (m)
         dp.c_s = c_s  # start circle origin (m)
-        dp.lamb_s = lambda_s  # start circle direction (unitless)
+        dp.lamb_s = lamb_s  # start circle direction (unitless)
         dp.c_e = c_e  # end circle origin (m)
-        dp.lamb_e = lambda_e  # end circle direction (unitless)
+        dp.lamb_e = lamb_e  # end circle direction (unitless)
         dp.z_1 = z_1  # Half-plane H_1 location (m)
         dp.q_12 = q_1  # Half-planes H_1 and H_2 unit normals (unitless)
         dp.z_2 = z_2  # Half-plane H_2 location (m)
@@ -417,6 +436,7 @@ class Algorithms:
         """
 
         # TODO Algorithm 8 goes here
+        state = None
         if not self.i:  # checks if i is empty
             self.i = 0
             state = 0
@@ -436,7 +456,7 @@ class Algorithms:
             flag = 2
             c = dp.c_s
             rho = R
-            lamb = dp.lambda_s
+            lamb = dp.lamb_s
             r = np.empty((3, 1))
             r[:] = np.nan
             q = np.empty((3, 1))
@@ -448,7 +468,7 @@ class Algorithms:
             flag = 2
             c = dp.c_s
             rho = R
-            lamb = dp.lambda_s
+            lamb = dp.lamb_s
             r = np.empty((3, 1))
             r[:] = np.nan
             q = np.empty((3, 1))
@@ -470,7 +490,7 @@ class Algorithms:
             flag = 2
             c = dp.c_e
             rho = R
-            lamb = dp.lambda_e
+            lamb = dp.lamb_e
             r = np.empty((3, 1))
             r[:] = np.nan
             q = np.empty((3, 1))
@@ -482,7 +502,7 @@ class Algorithms:
             flag = 2
             c = dp.c_e
             rho = R
-            lamb = dp.lambda_e
+            lamb = dp.lamb_e
             r = np.empty((3, 1))
             r[:] = np.nan
             q = np.empty((3, 1))
