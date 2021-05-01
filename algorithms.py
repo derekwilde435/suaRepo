@@ -274,9 +274,7 @@ class Algorithms:
         s_chi_s = np.sin(chi_s[0, 0])
         c_chi_e = np.cos(chi_e[0, 0])
         s_chi_e = np.sin(chi_e[0, 0])
-        z = Rz(np.pi / 2)
-        a = np.array([[c_chi_s], [s_chi_s], [0]])
-        c_rs = p_s + R * z * a
+        c_rs = p_s + R * Rz(np.pi / 2) * np.array([[c_chi_s], [s_chi_s], [0]])
         c_ls = p_s + R * Rz(-np.pi / 2) * np.array([[c_chi_s], [s_chi_s], [0]])
         c_re = p_e + R * Rz(np.pi / 2) * np.array([[c_chi_e], [s_chi_e], [0]])
         c_le = p_e + R * Rz(-np.pi / 2) * np.array([[c_chi_e], [s_chi_e], [0]])
@@ -297,9 +295,9 @@ class Algorithms:
         ell = np.linalg.norm(c_le-c_rs)
         th2 = th - np.pi/2 + np.arcsin(2*R/ell)
         if not np.isreal(th2):
-            L2 = 1000000  # will not be selected
+            L2 = 100000000  # will not be selected
         else:
-            L22 = np.sqrt(ell**2 - 4*R**2) \
+            L22 = np.sqrt(ell**2 - 4*(R**2)) \
                 + R*((2*np.pi + ((th2) % (2*np.pi)) - ((chi_s - np.pi/2) % (2*np.pi))) % (2*np.pi))\
                 + R*((2*np.pi + ((th2 + np.pi) % (2*np.pi)) - ((chi_e + np.pi/2) % (2*np.pi))) % (2*np.pi))
             # L22 = np.sqrt(ell**2 - 4*R**2) \
@@ -312,9 +310,9 @@ class Algorithms:
         ell = np.linalg.norm(c_re-c_ls)
         th2 = np.arccos(2 * R / ell)
         if not np.isreal(th2):
-            L3 = 1000000  # will not be selected
+            L3 = 100000000  # will not be selected
         else:
-            L33 = np.sqrt(ell**2 - 4*R**2) \
+            L33 = np.sqrt(ell**2 - 4*(R**2)) \
                 + R*((2*np.pi + ((chi_s + np.pi/2) % (2*np.pi)) - ((th + th2) % (2*np.pi))) % (2*np.pi))\
                 + R*((2*np.pi + ((chi_e - np.pi/2) % (2*np.pi)) - ((th + th2 - np.pi) % (2*np.pi))) % (2*np.pi))
             # L33 = np.sqrt(ell**2 - 4*R**2) \
@@ -337,7 +335,7 @@ class Algorithms:
         minL = min(listL)
         index = [i for i, x in enumerate(listL) if x == minL]
         i_min = index[0]
-        if i_min == 1:
+        if i_min == 0:
             c_s = c_rs
             lamb_s = 1
             c_e = c_re
@@ -347,7 +345,7 @@ class Algorithms:
             q_1 = (c_e - c_s)/np.linalg.norm(c_e-c_s)
             z_1 = c_s + R*Rz(-np.pi/2) * q_1
             z_2 = c_e + R*Rz(-np.pi/2)*q_1
-        elif i_min == 2:
+        elif i_min == 1:
             c_s = c_rs
             lamb_s = 1
             c_e = c_le
@@ -358,7 +356,7 @@ class Algorithms:
             q_1 = Rz(th2 + np.pi/2) * e_1
             z_1 = c_s + R * Rz(th2) * e_1
             z_2 = c_e + R * Rz(th2 + np.pi) * e_1
-        elif i_min == 3:
+        elif i_min == 2:
             c_s = c_ls
             lamb_s = -1
             c_e = c_re
@@ -407,7 +405,7 @@ class Algorithms:
         dp.q_3 = q_3  # Half-plane H_3 unit normal (m)
         # print("q_3=", q_3)
         dp.case = i_min  # case (unitless)
-        print("i_min=", i_min)
+        # print("i_min=", i_min)
 
         dp.lengths = [L1, L2, L3, L4]
         dp.theta = th
@@ -448,13 +446,13 @@ class Algorithms:
         """
 
         # TODO Algorithm 8 goes here
-        state = 0
+        # state = 0
         if not self.i:  # checks if i is empty
             self.i = 0
-            state = 0
+            self.state = 0
         if newpath:
             self.i = 1
-            state = 1
+            self.state = 1
             m, N = W.shape
             assert N >= 3
             assert m == 3
@@ -463,7 +461,7 @@ class Algorithms:
             assert N >= 3
             assert m == 3
         dp = self.findDubinsParameters(W[:, self.i-1], Chi[self.i-1, :], W[:, self.i], Chi[self.i, :], R)
-        if state == 1:
+        if self.state == 1:
             # Follow start orbit until on the correct side of H1
             flag = 2
             c = dp.c_s
@@ -474,20 +472,20 @@ class Algorithms:
             q = np.empty((3, 1))
             q[:] = np.nan
             if in_half_plane(p, dp.z_1, -dp.q_12):
-                state = 2
-        elif state == 2:
+                self.state = 2
+        elif self.state == 2:
             # Continue following the start orbit until in H1
             flag = 2
             c = dp.c_s
             rho = R
             lamb = dp.lamb_s
             r = np.empty((3, 1))
-            r[:] = np.nan
+            r[:] = np.nan  # if nothing else works, tryo to put 'zeros' in place of 'nan'
             q = np.empty((3, 1))
             q[:] = np.nan
             if in_half_plane(p, dp.z_1, dp.q_12):
-                state = 3
-        elif state == 3:
+                self.state = 3
+        elif self.state == 3:
             # Transition to straight-line path until in H2
             flag = 1
             r = dp.z_1
@@ -497,8 +495,8 @@ class Algorithms:
             rho = np.nan
             lamb = np.nan
             if in_half_plane(p, dp.z_2, dp.q_12):
-                state = 4
-        elif state == 4:
+                self.state = 4
+        elif self.state == 4:
             flag = 2
             c = dp.c_e
             rho = R
@@ -508,7 +506,7 @@ class Algorithms:
             q = np.empty((3, 1))
             q[:] = np.nan
             if in_half_plane(p, dp.z_3, -dp.q_3):
-                state = 5
+                self.state = 5
         else:  # state == 5
             # Continue following the end orbit until in H3
             flag = 2
@@ -520,9 +518,9 @@ class Algorithms:
             q = np.empty((3, 1))
             q[:] = np.nan
             if in_half_plane(p, dp.z_3, dp.q_3):
-                state = 1
+                self.state = 1
                 self.i = self.i + 1
-                if self.i > N:
+                if self.i >= N:
                     self.i = N
 
         return flag, r, q, c, rho, lamb, self.i, dp
